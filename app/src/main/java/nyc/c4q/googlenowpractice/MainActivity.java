@@ -2,6 +2,7 @@ package nyc.c4q.googlenowpractice;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
 
     private FeedAdapter feedAdapter;
     private ArrayList<GitHubJob> gitHubJobResponse;
+    private GitHubJob randomJob;
 
 
     @Override
@@ -42,43 +44,57 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
         recyclerView.setAdapter(feedAdapter);
         recyclerView.setLayoutManager(linearLayoutManager);
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://jobs.github.com/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .build();
+        if(savedInstanceState != null) {
+            randomJob = savedInstanceState.getParcelable("key");
+            feedAdapter.setGitHubJob(randomJob);
+            feedAdapter.notifyItemChanged(0);
+        }
 
-        GitHubJobService service = retrofit.create(GitHubJobService.class);
+        else {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl("https://jobs.github.com/")
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
 
-        Call<ArrayList<GitHubJob>> jobService = service.getJobs();
+            GitHubJobService service = retrofit.create(GitHubJobService.class);
 
-        jobService.enqueue(new Callback<ArrayList<GitHubJob>>() {
+            Call<ArrayList<GitHubJob>> jobService = service.getJobs();
 
-            @Override
-            public void onResponse(Call<ArrayList<GitHubJob>> call, Response<ArrayList<GitHubJob>> response) {
+            jobService.enqueue(new Callback<ArrayList<GitHubJob>>() {
 
-                if (response.isSuccessful()) {
+                @Override
+                public void onResponse(Call<ArrayList<GitHubJob>> call, Response<ArrayList<GitHubJob>> response) {
 
-                    gitHubJobResponse = response.body();
+                    if (response.isSuccessful()) {
 
-                    int listSize = gitHubJobResponse.size();
-                    Random random = new Random();
-                    int n = random.nextInt(listSize);
+                        gitHubJobResponse = response.body();
 
-                    GitHubJob randomJob = gitHubJobResponse.get(n);
-                    feedAdapter.setGitHubJob(randomJob);
-                    feedAdapter.notifyItemChanged(0);
+                        int listSize = gitHubJobResponse.size();
+                        Random random = new Random();
+                        int n = random.nextInt(listSize);
+
+                        randomJob = gitHubJobResponse.get(n);
+                        feedAdapter.setGitHubJob(randomJob);
+                        feedAdapter.notifyItemChanged(0);
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ArrayList<GitHubJob>> call, Throwable t) {
+                    Log.d(TAG, t.getMessage());
 
                 }
-            }
+            });
+        }
 
-            @Override
-            public void onFailure(Call<ArrayList<GitHubJob>> call, Throwable t) {
-                Log.d(TAG, t.getMessage());
+    }
 
-            }
-        });
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
 
-
+        outState.putParcelable("key", randomJob);
     }
 
     @Override
@@ -93,4 +109,5 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
         intent.putParcelableArrayListExtra(KEY, gitHubJobResponse);
         startActivity(intent);
     }
+
 }

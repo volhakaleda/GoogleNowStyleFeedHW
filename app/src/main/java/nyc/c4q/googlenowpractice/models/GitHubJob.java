@@ -1,7 +1,12 @@
 package nyc.c4q.googlenowpractice.models;
 
 
-public class GitHubJob {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+import java.io.Serializable;
+
+public class GitHubJob implements Parcelable{
 
     private String id;
     private String created_at;
@@ -102,4 +107,52 @@ public class GitHubJob {
     public void setUrl(String url) {
         this.url = url;
     }
+
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.created_at);
+        dest.writeString(this.title);
+        dest.writeString(this.location);
+        dest.writeString(this.type);
+        dest.writeString(this.description);
+        dest.writeString(this.how_to_apply);
+        dest.writeString(this.company);
+        dest.writeString(this.company_url);
+        dest.writeString(this.company_logo);
+        dest.writeString(this.url);
+    }
+
+
+    protected GitHubJob(Parcel in) {
+        this.id = in.readString();
+        this.created_at = in.readString();
+        this.title = in.readString();
+        this.location = in.readString();
+        this.type = in.readString();
+        this.description = in.readString();
+        this.how_to_apply = in.readString();
+        this.company = in.readString();
+        this.company_url = in.readString();
+        this.company_logo = in.readString();
+        this.url = in.readString();
+    }
+
+    public static final Creator<GitHubJob> CREATOR = new Creator<GitHubJob>() {
+        @Override
+        public GitHubJob createFromParcel(Parcel source) {
+            return new GitHubJob(source);
+        }
+
+        @Override
+        public GitHubJob[] newArray(int size) {
+            return new GitHubJob[size];
+        }
+    };
 }

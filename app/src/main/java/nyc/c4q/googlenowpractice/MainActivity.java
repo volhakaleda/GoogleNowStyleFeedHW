@@ -1,5 +1,7 @@
 package nyc.c4q.googlenowpractice;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -7,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
@@ -17,11 +20,15 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class MainActivity extends AppCompatActivity {
-
-    private FeedAdapter feedAdapter;
+public class MainActivity extends AppCompatActivity implements LinkInterface {
 
     private static final String TAG = MainActivity.class.getSimpleName();
+    public static final String KEY = "jobs";
+
+    private FeedAdapter feedAdapter;
+    private ArrayList<GitHubJob> gitHubJobResponse;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +36,7 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
-        feedAdapter = new FeedAdapter();
+        feedAdapter = new FeedAdapter(this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         recyclerView.setAdapter(feedAdapter);
@@ -42,16 +49,16 @@ public class MainActivity extends AppCompatActivity {
 
         GitHubJobService service = retrofit.create(GitHubJobService.class);
 
-        Call<List<GitHubJob>> jobService = service.getJobs();
+        Call<ArrayList<GitHubJob>> jobService = service.getJobs();
 
-        jobService.enqueue(new Callback<List<GitHubJob>>() {
+        jobService.enqueue(new Callback<ArrayList<GitHubJob>>() {
 
             @Override
-            public void onResponse(Call<List<GitHubJob>> call, Response<List<GitHubJob>> response) {
+            public void onResponse(Call<ArrayList<GitHubJob>> call, Response<ArrayList<GitHubJob>> response) {
 
                 if (response.isSuccessful()) {
 
-                    List<GitHubJob> gitHubJobResponse = response.body();
+                    gitHubJobResponse = response.body();
 
                     int listSize = gitHubJobResponse.size();
                     Random random = new Random();
@@ -76,12 +83,25 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<List<GitHubJob>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<GitHubJob>> call, Throwable t) {
                 Log.d(TAG, t.getMessage());
 
             }
         });
 
 
+    }
+
+    @Override
+    public void clickLink(String link) {
+        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));
+        startActivity(browserIntent);
+    }
+
+    @Override
+    public void clickAllJobs(){
+        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        intent.putParcelableArrayListExtra(KEY, gitHubJobResponse);
+        startActivity(intent);
     }
 }

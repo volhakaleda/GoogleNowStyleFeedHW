@@ -1,5 +1,6 @@
 package nyc.c4q.googlenowpractice;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import nyc.c4q.googlenowpractice.models.GitHubJob;
@@ -9,5 +10,5 @@ import retrofit2.http.GET;
 public interface GitHubJobService {
 
     @GET ("/positions.json")
-    Call<List<GitHubJob>> getJobs();
+    Call<ArrayList<GitHubJob>> getJobs();
 }

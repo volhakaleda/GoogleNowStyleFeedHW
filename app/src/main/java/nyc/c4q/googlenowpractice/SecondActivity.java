@@ -2,6 +2,7 @@ package nyc.c4q.googlenowpractice;
 
 import android.content.Intent;
 import android.net.Uri;
+import android.os.PersistableBundle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,14 +17,21 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class SecondActivity extends AppCompatActivity implements LinkInterface {
 
     private SecondAdapter secondAdapter;
+    private ArrayList<GitHubJob> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
 
-        Intent intent = getIntent();
-        ArrayList<GitHubJob> list = intent.getParcelableArrayListExtra(MainActivity.KEY);
+        if(savedInstanceState != null) {
+            list = savedInstanceState.getParcelableArrayList("keyArrayList");
+        }
+
+        else{
+            Intent intent = getIntent();
+            list = intent.getParcelableArrayListExtra(MainActivity.KEY);
+        }
 
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.second_recyclerview);
         secondAdapter = new SecondAdapter(list, this);
@@ -33,6 +41,13 @@ public class SecondActivity extends AppCompatActivity implements LinkInterface {
         recyclerView.setLayoutManager(linearLayoutManager);
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putParcelableArrayList("keyArrayList", list);
+    }
+
     @Override
     public void clickLink(String link) {
         Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(link));

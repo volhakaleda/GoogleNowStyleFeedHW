@@ -48,6 +48,7 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
             randomJob = savedInstanceState.getParcelable("key");
             feedAdapter.setGitHubJob(randomJob);
             feedAdapter.notifyItemChanged(0);
+            gitHubJobResponse = savedInstanceState.getParcelableArrayList("keyAllJobs");
         }
 
         else {
@@ -95,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
         super.onSaveInstanceState(outState);
 
         outState.putParcelable("key", randomJob);
+        outState.putParcelableArrayList("keyAllJobs", gitHubJobResponse);
     }
 
     @Override

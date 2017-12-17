@@ -60,7 +60,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 //                TODO for Raheel
 
-//            case VIEW_TYPE_GITHUBJOB:
+//            case VIEW_TYPE_X:
 //                if (gitHubJob == null) {
 //                    return;
 //                }
@@ -70,7 +70,7 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
 //                TODO for Vivian
 
-//            case VIEW_TYPE_GITHUBJOB:
+//            case VIEW_TYPE_Y:
 //                if (gitHubJob == null) {
 //                    return;
 //                }
@@ -79,7 +79,8 @@ public class FeedAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 //                break;
         }
     }
-// to correct ItemCount to 3
+//
+//              TODO for the last person to correct ItemCount to 3
     @Override
     public int getItemCount() {
         return 1;

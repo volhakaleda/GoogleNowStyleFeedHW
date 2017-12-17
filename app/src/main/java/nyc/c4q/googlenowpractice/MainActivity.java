@@ -68,17 +68,6 @@ public class MainActivity extends AppCompatActivity implements LinkInterface {
                     feedAdapter.setGitHubJob(randomJob);
                     feedAdapter.notifyItemChanged(0);
 
-//                    String company = gitHubJobResponse.getCompany();
-//                    String companyLogo = gitHubJobResponse.getCompany_logo();
-//                    String companyUrl = gitHubJobResponse.getCompany_url();
-//                    String createdAt = gitHubJobResponse.getCreated_at();
-//                    String description = gitHubJobResponse.getDescription();
-//                    String howToApply = gitHubJobResponse.getHow_to_apply();
-//                    String id = gitHubJobResponse.getId();
-//                    String location = gitHubJobResponse.getLocation();
-//                    String title = gitHubJobResponse.getTitle();
-//                    String type = gitHubJobResponse.getType();
-//                    String url = gitHubJobResponse.getUrl();
                 }
             }
 
